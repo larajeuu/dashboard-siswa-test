@@ -1,5 +1,3 @@
-
-// @ts-expect-error: xlsx may be provided without bundled type declarations.
 import * as XLSX from "xlsx";
 import type { AttendanceLog, AttendanceStatus, DashboardData, Student } from "./types";
 
