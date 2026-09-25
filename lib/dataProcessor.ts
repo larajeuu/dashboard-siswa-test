@@ -3,6 +3,7 @@ import type {
   ChartDatum,
   DetailRow,
   Filters,
+  RiskStudent,
   Student,
   SummaryStats,
 } from "./types";
@@ -118,4 +119,30 @@ export function buildDetailTable(
     ...s,
     statusHariIni: statusMap.get(s.id) ?? "-",
   }));
+}
+
+const NILAI_THRESHOLD = 60;
+const ATTENDANCE_THRESHOLD = 75; // dalam persen
+
+function computeAttendanceRate(studentId: string, allLogs: AttendanceLog[]): number {
+  const studentLogs = allLogs.filter((l) => l.siswaId === studentId);
+  if (studentLogs.length === 0) return 100; // belum ada data absensi = belum tentu berisiko
+  const hadirCount = studentLogs.filter((l) => l.status === "Hadir").length;
+  return Math.round((hadirCount / studentLogs.length) * 100);
+}
+
+export function computeRiskStudents(
+  filteredStudents: Student[],
+  allLogs: AttendanceLog[]
+): RiskStudent[] {
+  return filteredStudents
+    .map((s) => {
+      const attendanceRate = computeAttendanceRate(s.id, allLogs);
+      const riskReasons: RiskStudent["riskReasons"] = [];
+      if (s.nilai < NILAI_THRESHOLD) riskReasons.push("nilai");
+      if (attendanceRate < ATTENDANCE_THRESHOLD) riskReasons.push("kehadiran");
+      return { ...s, attendanceRate, riskReasons };
+    })
+    .filter((s) => s.riskReasons.length > 0)
+    .sort((a, b) => b.riskReasons.length - a.riskReasons.length); // yang kena 2 kriteria muncul duluan
 }

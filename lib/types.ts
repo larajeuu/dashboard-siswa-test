@@ -47,3 +47,8 @@ export interface ChartDatum {
 export interface DetailRow extends Student {
   statusHariIni: string;
 }
+
+export interface RiskStudent extends Student {
+  attendanceRate: number; // persentase kehadiran, 0-100
+  riskReasons: ("nilai" | "kehadiran")[];
+}
