@@ -21,8 +21,8 @@ export function filterStudents(
 ): Student[] {
   const search = filters.search.trim().toLowerCase();
   return students.filter((s) => {
-    if (filters.kelas && s.kelas !== filters.kelas) return false;
-    if (filters.gender && s.gender !== filters.gender) return false;
+    if (filters.kelas !== "all" && s.kelas !== filters.kelas) return false;
+    if (filters.gender !== "all" && s.gender !== filters.gender) return false;
     if (search && !s.nama.toLowerCase().includes(search)) return false;
     return true;
   });
@@ -34,8 +34,8 @@ export function filterLogs(
 ): AttendanceLog[] {
   const idSet = new Set(params.studentIds);
   return logs.filter((l) => {
-    if (params.tanggal && l.tanggal !== params.tanggal) return false;
-    if (params.status && l.status !== params.status) return false;
+    if (params.tanggal !== "all" && l.tanggal !== params.tanggal) return false;
+    if (params.status !== "all" && l.status !== params.status) return false;
     if (!idSet.has(l.siswaId)) return false;
     return true;
   });

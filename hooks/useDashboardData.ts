@@ -86,17 +86,23 @@ export function useDashboardData() {
 
   // ── Data terfilter ────────────────────────────────────────────
   const filteredStudents = useMemo(
-    () => filterStudents(students, filters),
-    [students, filters]
+    () =>
+      filterStudents(students, {
+        kelas: filters.kelas,
+        gender: filters.gender,
+        search: filters.search,
+      }),
+    [students, filters.kelas, filters.gender, filters.search]
   );
+
   const filteredLogs = useMemo(
     () =>
       filterLogs(logs, {
         tanggal: filters.tanggal,
         status: filters.status,
-        studentIds: filteredStudents.map((student) => student.id),
+        studentIds: filteredStudents.map((s) => s.id),
       }),
-    [logs, filters, filteredStudents]
+    [logs, filters.tanggal, filters.status, filteredStudents]
   );
 
   // ── Data siap pakai untuk komponen tampilan ──────────────────

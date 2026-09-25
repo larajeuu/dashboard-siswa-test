@@ -3,10 +3,28 @@
 
 import { useDashboardData } from "@/hooks/useDashboardData";
 import FileUpload from "@/components/FileUpload";
+import FilterBar from "@/components/FilterBar";
+import SummaryCards from "@/components/SummaryCards";
+import DetailTable from "@/components/DetailTable";
+import ChartCard from "@/components/ChartCard";
+import AttendanceChart from "@/components/charts/AttendanceChart";
 
 export default function DashboardPage() {
-  const { loadFile, loadSampleData, isLoading, error, hasData, summary } =
-    useDashboardData();
+  const {
+    loadFile,
+    loadSampleData,
+    isLoading,
+    error,
+    hasData,
+    filters,
+    setFilters,
+    kelasOptions,
+    tanggalOptions,
+    summary,
+    attendanceChartData,
+    genderChartData,
+    detailTableRows,
+  } = useDashboardData();
 
   return (
     <main className="min-h-screen bg-gray-50 p-6 space-y-4">
@@ -25,9 +43,22 @@ export default function DashboardPage() {
       </button>
 
       {hasData && (
-        <pre className="bg-white border border-gray-200 rounded p-4 text-xs overflow-auto">
-          {JSON.stringify(summary, null, 2)}
-        </pre>
+        <>
+          <FilterBar
+            filters={filters}
+            onFilterChange={setFilters}
+            kelasOptions={kelasOptions}
+            tanggalOptions={tanggalOptions}
+          />
+
+          <SummaryCards summary={summary} />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <AttendanceChart data={attendanceChartData} />
+          </div>
+
+          <DetailTable rows={detailTableRows} />
+        </>
       )}
     </main>
   );
